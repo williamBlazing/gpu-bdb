@@ -5,7 +5,7 @@ import gc
 import time
 import uuid
 
-N_REPEATS = 5
+N_REPEATS = 3
 
 
 def get_qnum_from_filename(name):
@@ -21,8 +21,9 @@ def load_query(qnum, fn):
     return mod.main
 
 
-dask_qnums = [str(i).zfill(2) for i in range(1, 31)]
+dask_qnums = [str(i).zfill(2) for i in range(1, 2)]
 bsql_qnums = [str(i).zfill(2) for i in range(1, 31)]
+bsql_qnums.remove('27')
 
 
 if __name__ == "__main__":

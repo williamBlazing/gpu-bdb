@@ -193,7 +193,8 @@ def import_query_libs():
         "dask_cudf",
         "pandas",
         "numpy",
-        "spacy",
+        #"spacy",
+        "blazingsql",
     ]
 
     # optionally include blazingsql

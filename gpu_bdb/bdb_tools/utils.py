@@ -317,7 +317,8 @@ def run_bsql_query(
         data_dir = config["data_dir"]
         results = benchmark(
             query_func,
-            dask_profile=config.get("dask_profile"),
+            # dask_profile=config.get("dask_profile"),
+            dask_profile=False,
             data_dir=data_dir,
             client=client,
             bc=blazing_context,
@@ -869,9 +870,10 @@ def generate_library_information():
         "blazingsql",
     ]
 
-    conda_list_command = (
-        os.environ.get("CONDA_PREFIX").partition("envs")[0] + "bin/conda list"
-    )
+    # conda_list_command = (
+    #     os.environ.get("CONDA_PREFIX").partition("envs")[0] + "bin/conda list"
+    # )
+    conda_list_command = "conda list"
     result = subprocess.run(
         conda_list_command, stdout=subprocess.PIPE, shell=True
     ).stdout.decode("utf-8")
