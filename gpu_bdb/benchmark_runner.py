@@ -21,7 +21,8 @@ def load_query(qnum, fn):
     return mod.main
 
 
-dask_qnums = [str(i).zfill(2) for i in range(1, 2)]
+dask_qnums = [str(i).zfill(2) for i in range(1, 31)]
+dask_qnums.remove('27')
 bsql_qnums = [str(i).zfill(2) for i in range(1, 31)]
 bsql_qnums.remove('27')
 
