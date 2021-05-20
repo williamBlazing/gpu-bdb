@@ -135,25 +135,26 @@ def main(data_dir, client, bc, config):
     """
 
     cust_and_clicks_ddf = bc.sql(query)
+    return cust_and_clicks_ddf
 
-    cust_and_clicks_ddf = cust_and_clicks_ddf.repartition(npartitions=1)
+    # cust_and_clicks_ddf = cust_and_clicks_ddf.repartition(npartitions=1)
 
-    # Convert clicks_in_category to a binary label
-    cust_and_clicks_ddf["clicks_in_category"] = (
-        cust_and_clicks_ddf["clicks_in_category"]
-        > cust_and_clicks_ddf["clicks_in_category"].mean()
-    ).astype("int64")
+    # # Convert clicks_in_category to a binary label
+    # cust_and_clicks_ddf["clicks_in_category"] = (
+    #     cust_and_clicks_ddf["clicks_in_category"]
+    #     > cust_and_clicks_ddf["clicks_in_category"].mean()
+    # ).astype("int64")
 
-    # Converting the dataframe to float64 as cuml logistic reg requires this
-    ml_input_df = cust_and_clicks_ddf.astype("float64")
+    # # Converting the dataframe to float64 as cuml logistic reg requires this
+    # ml_input_df = cust_and_clicks_ddf.astype("float64")
 
-    ml_input_df = ml_input_df.persist()
-    wait(ml_input_df)
+    # ml_input_df = ml_input_df.persist()
+    # wait(ml_input_df)
 
-    ml_tasks = [delayed(build_and_predict_model)(df) for df in ml_input_df.to_delayed()]
-    results_dict = client.compute(*ml_tasks, sync=True)
+    # ml_tasks = [delayed(build_and_predict_model)(df) for df in ml_input_df.to_delayed()]
+    # results_dict = client.compute(*ml_tasks, sync=True)
 
-    return results_dict
+    # return results_dict
 
 
 if __name__ == "__main__":

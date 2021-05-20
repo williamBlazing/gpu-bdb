@@ -329,20 +329,21 @@ def main(data_dir, client, bc, config):
         ORDER BY pr_review_sk
     """
     train_data = bc.sql(query2)
+    return train_data
 
-    final_data, acc, prec, cmat = post_etl_processing(
-        client=client, train_data=train_data, test_data=test_data
-    )
+    # final_data, acc, prec, cmat = post_etl_processing(
+    #     client=client, train_data=train_data, test_data=test_data
+    # )
 
-    payload = {
-        "df": final_data,
-        "acc": acc,
-        "prec": prec,
-        "cmat": cmat,
-        "output_type": "supervised",
-    }
+    # payload = {
+    #     "df": final_data,
+    #     "acc": acc,
+    #     "prec": prec,
+    #     "cmat": cmat,
+    #     "output_type": "supervised",
+    # }
 
-    return payload
+    # return payload
 
 
 if __name__ == "__main__":

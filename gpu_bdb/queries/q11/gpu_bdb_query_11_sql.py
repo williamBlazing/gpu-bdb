@@ -68,10 +68,11 @@ def main(data_dir, client, bc, config):
     """
 
     result = bc.sql(query)
-    sales_corr = result["x"].corr(result["y"]).compute()
-    result_df = cudf.DataFrame([sales_corr])
-    result_df.columns = ["corr(CAST(reviews_count AS DOUBLE), avg_rating)"]
-    return result_df
+    return result
+    # sales_corr = result["x"].corr(result["y"]).compute()
+    # result_df = cudf.DataFrame([sales_corr])
+    # result_df.columns = ["corr(CAST(reviews_count AS DOUBLE), avg_rating)"]
+    # return result_df
 
 
 if __name__ == "__main__":
