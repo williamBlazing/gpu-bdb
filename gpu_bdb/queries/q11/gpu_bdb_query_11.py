@@ -113,14 +113,16 @@ def main(client, config):
         }
     ).reset_index()
 
-    # this is a scalar so can remain a cudf frame
-    sales_corr = sales["reviews_count"].corr(sales["avg_rating"])
-    sales_corr = sales_corr.persist()
-    sales_corr = sales_corr.compute()
-    result_df = cudf.DataFrame([sales_corr])
-    result_df.columns = ["corr(CAST(reviews_count AS DOUBLE), avg_rating)"]
+    return sales
 
-    return result_df
+    # this is a scalar so can remain a cudf frame
+    # sales_corr = sales["reviews_count"].corr(sales["avg_rating"])
+    # sales_corr = sales_corr.persist()
+    # sales_corr = sales_corr.compute()
+    # result_df = cudf.DataFrame([sales_corr])
+    # result_df.columns = ["corr(CAST(reviews_count AS DOUBLE), avg_rating)"]
+
+    # return result_df
 
 
 if __name__ == "__main__":

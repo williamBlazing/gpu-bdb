@@ -337,17 +337,19 @@ def main(client, config):
     test_data = test_data.reset_index(drop=True)
     del product_reviews_df
 
-    final_data, acc, prec, cmat = post_etl_processing(
-        client=client, train_data=train_data, test_data=test_data
-    )
-    payload = {
-        "df": final_data,
-        "acc": acc,
-        "prec": prec,
-        "cmat": cmat,
-        "output_type": "supervised",
-    }
-    return payload
+    return train_data
+
+    # final_data, acc, prec, cmat = post_etl_processing(
+    #     client=client, train_data=train_data, test_data=test_data
+    # )
+    # payload = {
+    #     "df": final_data,
+    #     "acc": acc,
+    #     "prec": prec,
+    #     "cmat": cmat,
+    #     "output_type": "supervised",
+    # }
+    # return payload
 
 
 def register_serialization():

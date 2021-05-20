@@ -243,27 +243,29 @@ def main(client, config):
     ]
     cust_and_clicks_ddf = cust_and_clicks_ddf[keep_cols]
 
-    # The ETL step in spark covers everything above this point
+    return cust_and_clicks_ddf
 
-    # Convert clicks_in_category to a binary label
-    cust_and_clicks_ddf["clicks_in_category"] = (
-        (
-            cust_and_clicks_ddf["clicks_in_category"]
-            > cust_and_clicks_ddf["clicks_in_category"].mean()
-        )
-        .reset_index(drop=True)
-        .astype(np.int64)
-    )
+    # # The ETL step in spark covers everything above this point
 
-    # Converting the dataframe to float64 as cuml logistic reg requires this
-    ml_input_df = cust_and_clicks_ddf.astype("float64")
+    # # Convert clicks_in_category to a binary label
+    # cust_and_clicks_ddf["clicks_in_category"] = (
+    #     (
+    #         cust_and_clicks_ddf["clicks_in_category"]
+    #         > cust_and_clicks_ddf["clicks_in_category"].mean()
+    #     )
+    #     .reset_index(drop=True)
+    #     .astype(np.int64)
+    # )
 
-    ml_input_df = ml_input_df.persist()
+    # # Converting the dataframe to float64 as cuml logistic reg requires this
+    # ml_input_df = cust_and_clicks_ddf.astype("float64")
 
-    ml_tasks = [delayed(build_and_predict_model)(df) for df in ml_input_df.to_delayed()]
-    results_dict = client.compute(*ml_tasks, sync=True)
+    # ml_input_df = ml_input_df.persist()
 
-    return results_dict
+    # ml_tasks = [delayed(build_and_predict_model)(df) for df in ml_input_df.to_delayed()]
+    # results_dict = client.compute(*ml_tasks, sync=True)
+
+    # return results_dict
 
 
 if __name__ == "__main__":
