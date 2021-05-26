@@ -49,22 +49,29 @@ from oauth2client.service_account import ServiceAccountCredentials
 # Benchmark Timing
 #################################
 def benchmark(func, *args, **kwargs):
-    csv = kwargs.pop("csv", True)
+    print("benchmark function start")
+    csv = kwargs.pop("csv", False)
     dask_profile = kwargs.pop("dask_profile", False)
     compute_result = kwargs.pop("compute_result", False)
     name = func.__name__
     t0 = time.time()
     if dask_profile:
+        print("benchmark function in dask_profile")
         with performance_report(filename=f"profiled-{name}.html"):
             result = func(*args, **kwargs)
+        print("benchmark function done dask_profile")
     else:
+        print("benchmark function about to func")
         result = func(*args, **kwargs)
+        print("benchmark function done func")
+
     elapsed_time = time.time() - t0
 
     logging_info = {}
     logging_info["elapsed_time_seconds"] = elapsed_time
     logging_info["function_name"] = name
     if compute_result:
+        print("benchmark function in compute_result")
         import dask_cudf
 
         if isinstance(result, dask_cudf.DataFrame):
@@ -78,6 +85,7 @@ def benchmark(func, *args, **kwargs):
         results = dask.compute(*len_tasks)
         compute_et = time.time()
         logging_info["compute_time_seconds"] = compute_et - compute_st
+        print("benchmark function done compute_result")
 
     logdf = pd.DataFrame.from_dict(logging_info, orient="index").T
 
@@ -85,6 +93,7 @@ def benchmark(func, *args, **kwargs):
         logdf.to_csv(f"benchmarked_{name}.csv", index=False)
     else:
         print(logdf)
+    print("benchmark function end")
     return result
 
 
@@ -124,6 +133,7 @@ def write_etl_result(df, filetype="parquet", output_directory="./"):
 
     QUERY_NUM = get_query_number()
     if filetype == "csv":
+        print("filetype == csv  why are we here")
         output_path = f"{output_directory}q{QUERY_NUM}-results.csv"
 
         if os.path.exists(output_path):
@@ -136,13 +146,16 @@ def write_etl_result(df, filetype="parquet", output_directory="./"):
     else:
         output_path = f"{output_directory}q{QUERY_NUM}-results.parquet"
         if os.path.exists(output_path):
+            print("removing already existing results " + output_path)
             if os.path.isdir(output_path):
                 ## to remove existing  directory
                 shutil.rmtree(output_path)
             else:
                 ## to remove existing single parquet file
                 os.remove(output_path)
+            print("success removed already existing results " + output_path)
 
+        print("writing results to parquet " + output_path)
         if isinstance(df, dd.DataFrame):
             df.to_parquet(output_path, write_index=False)
 
@@ -150,6 +163,7 @@ def write_etl_result(df, filetype="parquet", output_directory="./"):
             df.to_parquet(
                 f"{output_directory}q{QUERY_NUM}-results.parquet", index=False
             )
+        print("Success writing results to parquet " + output_path)
 
 
 def write_result_q05(results_dict, output_directory="./", filetype=None):
@@ -312,7 +326,9 @@ def run_bsql_query(
     """
     # TODO: Unify this with dask-cudf version
     try:
+        print("start run_bsql_query")
         remove_benchmark_files()
+        print("removed benchmark files run_bsql_query")
         config["start_time"] = time.time()
         data_dir = config["data_dir"]
         results = benchmark(
@@ -324,6 +340,7 @@ def run_bsql_query(
             bc=blazing_context,
             config=config,
         )
+        print("finished benchmark of query_func run_bsql_query")
 
         benchmark(
             write_func,
@@ -331,6 +348,7 @@ def run_bsql_query(
             output_directory=config["output_dir"],
             filetype=config["output_filetype"],
         )
+        print("finished benchmark of write_func run_bsql_query")
         config["query_status"] = "Success"
 
         result_verified = False
@@ -345,7 +363,9 @@ def run_bsql_query(
         print(traceback.format_exc())
 
     # google sheet benchmarking automation
+    print("about to push to googlesheet run_bsql_query")
     push_payload_to_googlesheet(config)
+    print("finished  push to googlesheet run_bsql_query")
 
 
 def add_empty_config(args):

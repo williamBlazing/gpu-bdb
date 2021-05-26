@@ -43,7 +43,10 @@ def read_tables(data_dir, bc):
 
 
 def main(data_dir, client, bc, config):
+    print("query 01 bsql start")
     benchmark(read_tables, data_dir, bc, dask_profile=config["dask_profile"])
+
+    print("query 01 bsql read tables")
 
     query_distinct = f"""
         SELECT DISTINCT ss_item_sk, ss_ticket_number
@@ -54,9 +57,14 @@ def main(data_dir, client, bc, config):
     """
     result_distinct = bc.sql(query_distinct)
 
+    print("query 01 bsql first query done")
+
     result_distinct = result_distinct.persist()
     wait(result_distinct)
+
+    print("query 01 bsql first wait done")
     bc.create_table("distinct_table", result_distinct)
+    print("query 01 bsql second create tables done")
 
     query = f"""
         SELECT item_sk_1, item_sk_2, COUNT(*) AS cnt
@@ -77,7 +85,10 @@ def main(data_dir, client, bc, config):
     """
     result = bc.sql(query)
 
+    print("query 01 bsql second query done")
+
     bc.drop_table("distinct_table")
+    print("query 01 bsql done dropped table")
     return result
 
 
