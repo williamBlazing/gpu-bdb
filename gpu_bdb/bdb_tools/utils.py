@@ -768,26 +768,34 @@ def build_benchmark_googlesheet_payload(config):
     """
     config : dict
     """
+    print("build_benchmark_googlesheet_payload start")
     # Don't mutate original dictionary
     data = config.copy()
+    print("build_benchmark_googlesheet_payload copied config")
 
     # get the hostname of the machine running this workload
     data["hostname"] = socket.gethostname()
+    print("build_benchmark_googlesheet_payload got socket hostname")
 
     QUERY_NUM = get_query_number()
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    print("build_benchmark_googlesheet_payload got query")
+
     query_time = _get_benchmarked_method_time(
         filename="benchmarked_main.csv", query_start_time=config.get("start_time")
     )
+    print("build_benchmark_googlesheet_payload got query time")
     writing_time = _get_benchmarked_method_time(
         filename="benchmarked_write_result.csv",
         query_start_time=config.get("start_time"),
     )
+    print("build_benchmark_googlesheet_payload got write time")
     read_graph_creation_time = _get_benchmarked_method_time(
         filename="benchmarked_read_tables.csv",
         query_start_time=config.get("start_time"),
     )
+    print("build_benchmark_googlesheet_payload got read graph time")
     if data["get_read_time"] and read_graph_creation_time and query_time:
         ### below contains the computation time
         compute_read_table_time = _get_benchmarked_method_time(
@@ -799,10 +807,13 @@ def build_benchmark_googlesheet_payload(config):
         query_time = query_time - compute_read_table_time
     else:
         compute_read_table_time = None
+    print("build_benchmark_googlesheet_payload got compute time")
 
     # get library info
     library_info = generate_library_information()
+    print("build_benchmark_googlesheet_payload got lib info")
     data.update(library_info)
+    print("build_benchmark_googlesheet_payload lib info update")
 
     payload = OrderedDict(
         {
@@ -845,6 +856,7 @@ def build_benchmark_googlesheet_payload(config):
         }
     )
     payload = list(payload.values())
+    print("build_benchmark_googlesheet_payload made payload")
     return payload
 
 
@@ -908,6 +920,7 @@ def generate_library_information():
 
 
 def push_payload_to_googlesheet(config):
+    print("push_payload_to_googlesheet start")
     if os.environ.get("GOOGLE_SHEETS_CREDENTIALS_PATH", None):
       if not config.get("tab") or not config.get("sheet"):
           print("Must pass a sheet and tab name to use Google Sheets automation")
@@ -922,11 +935,16 @@ def push_payload_to_googlesheet(config):
       credentials = ServiceAccountCredentials.from_json_keyfile_name(
           credentials_path, scope
       )
+      print("push_payload_to_googlesheet got creds")
       gc = gspread.authorize(credentials)
+      print("push_payload_to_googlesheet autorized")
       payload = build_benchmark_googlesheet_payload(config)
+      print("push_payload_to_googlesheet got payload")
       s = gc.open(config["sheet"])
       tab = s.worksheet(config["tab"])
+      print("push_payload_to_googlesheet got tab")
       tab.append_row(payload, value_input_option='USER_ENTERED')
+      print("push_payload_to_googlesheet appended row")
 
 
 #################################
