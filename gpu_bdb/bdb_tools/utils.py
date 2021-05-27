@@ -362,10 +362,23 @@ def run_bsql_query(
         print("Encountered Exception while running query")
         print(traceback.format_exc())
 
-    # google sheet benchmarking automation
-    print("about to push to googlesheet run_bsql_query")
-    push_payload_to_googlesheet(config)
-    print("finished  push to googlesheet run_bsql_query")
+    if os.environ.get("LOG_TIMING_TO_CSV_PATH", None):
+        # lets output to csv if there is a file path defined
+        print("about to write timing to csv")
+        import csv
+        payload = build_benchmark_googlesheet_payload(config)
+        payload = [str(pay) for pay in payload]
+        csv_path = os.environ.get("LOG_TIMING_TO_CSV_PATH", None)
+        with open(csv_path, "wb") as csv_file:
+            writer = csv.writer(csv_file, delimiter='|')
+            writer.writerow(payload)
+        print("wrote timing to csv")
+    else:
+        # google sheet benchmarking automation
+        print("about to push to googlesheet run_bsql_query")
+        push_payload_to_googlesheet(config)
+        print("finished  push to googlesheet run_bsql_query")
+        
 
 
 def add_empty_config(args):

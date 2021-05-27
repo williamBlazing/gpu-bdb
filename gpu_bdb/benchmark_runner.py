@@ -47,9 +47,13 @@ if __name__ == "__main__":
             for qnum in bsql_qnums
         }
 
+    ch = time.time()
     client, bc = attach_to_cluster(config, create_blazing_context=include_blazing)
+    print("time to attach_to_cluster: " + str(time.time() - ch))
     # Preload required libraries for queries on all workers
+    ch = time.time()
     client.run(import_query_libs)
+    print("time to import_query_libs: " + str(time.time() - ch))
 
     base_path = os.getcwd()
 

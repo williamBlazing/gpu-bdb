@@ -134,6 +134,8 @@ def attach_to_cluster(config, create_blazing_context=False):
     bc = None
     if create_blazing_context:
         from blazingsql import BlazingContext
+        import time
+        ch = time.time()
         bc = BlazingContext(
             dask_client=client,
             pool=os.environ.get("BLAZING_POOL", False),
@@ -142,6 +144,7 @@ def attach_to_cluster(config, create_blazing_context=False):
             allocator=os.environ.get("BLAZING_ALLOCATOR_MODE", "existing"),
             initial_pool_size=os.environ.get("BLAZING_INITIAL_POOL_SIZE", None)
         )
+        print("time to create BlazingContext: " + str(time.time() - ch))
 
     return client, bc
 
