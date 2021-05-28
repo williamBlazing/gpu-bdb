@@ -50,7 +50,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 #################################
 def benchmark(func, *args, **kwargs):
     print("benchmark function start")
-    csv = kwargs.pop("csv", False)
+    csv = kwargs.pop("csv", True)
     dask_profile = kwargs.pop("dask_profile", False)
     compute_result = kwargs.pop("compute_result", False)
     name = func.__name__
