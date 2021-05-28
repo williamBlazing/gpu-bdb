@@ -823,10 +823,10 @@ def build_benchmark_googlesheet_payload(config):
     print("build_benchmark_googlesheet_payload got compute time")
 
     # get library info
-    library_info = generate_library_information()
-    print("build_benchmark_googlesheet_payload got lib info")
-    data.update(library_info)
-    print("build_benchmark_googlesheet_payload lib info update")
+    # library_info = generate_library_information()
+    # print("build_benchmark_googlesheet_payload got lib info")
+    # data.update(library_info)
+    # print("build_benchmark_googlesheet_payload lib info update")
 
     payload = OrderedDict(
         {
@@ -854,18 +854,18 @@ def build_benchmark_googlesheet_payload(config):
             "Number of GPUs": os.environ.get("NUM_WORKERS"),
             "Data Location": data.get("data_dir"),
             "Current Time": current_time,
-            "cuDF Version": data.get("cudf"),
-            "BlazingSQL Version": data.get("blazingsql"),
-            "Dask Version": data.get("dask"),
-            "Distributed Version": data.get("distributed"),
-            "Dask-CUDA Version": data.get("dask-cuda"),
-            "UCX-py Version": data.get("ucx-py"),
-            "UCX Version": data.get("ucx"),
-            "RMM Version": data.get("rmm"),
-            "cuML Version": data.get("cuml"),
-            "CuPy Version": data.get("cupy"),
+            # "cuDF Version": data.get("cudf"),
+            # "BlazingSQL Version": data.get("blazingsql"),
+            # "Dask Version": data.get("dask"),
+            # "Distributed Version": data.get("distributed"),
+            # "Dask-CUDA Version": data.get("dask-cuda"),
+            # "UCX-py Version": data.get("ucx-py"),
+            # "UCX Version": data.get("ucx"),
+            # "RMM Version": data.get("rmm"),
+            # "cuML Version": data.get("cuml"),
+            # "CuPy Version": data.get("cupy"),
             "Query Status": data.get("query_status", "Unknown"),
-            "Unique Run ID": data.get("run_id"),
+            "Unique Run ID": data.get("run_id", "Unknown"),
         }
     )
     payload = list(payload.values())
